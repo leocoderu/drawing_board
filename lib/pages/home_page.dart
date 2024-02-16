@@ -15,7 +15,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: SafeArea(
         child: Board(
-          child: const Text('Drawing Board'),
+          child: const Center(
+              child: Text('Drawing Board',
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900),
+              ),
+          ),
         ),
       ),
     );
