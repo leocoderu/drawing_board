@@ -46,7 +46,7 @@ class _BoardState extends State<Board> {
         },
         onScaleEnd: (scaleUpdateDetail) => setState(() => tPos = zPos),
         child: CustomPaint(
-          painter: DotsPainter(xPos: xPos, yPos: yPos, zPos: zPos, dotSize: 2.5, color: gridColor, center: true),
+          painter: DotsPainter(xPos: xPos, yPos: yPos, zPos: zPos, dotSize: 2.5, color: gridColor, center: false),
           child: widget.child,
         ),
       ),

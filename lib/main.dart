@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Pages
-import 'package:drawing_board/pages/home_page.dart';
+import 'package:drawing_board/pages/home_page/home_page.dart';
 
 void main() => runApp(const MyApp());
 
