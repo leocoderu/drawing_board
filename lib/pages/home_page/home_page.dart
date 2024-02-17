@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:drawing_board/widgets/board.dart';
+import 'package:drawing_board/pages/home_page/widgets/board/board.dart';
 import 'package:drawing_board/pages/home_page/widgets/navigate_panel.dart';
 import 'package:drawing_board/pages/home_page/widgets/notify_panel.dart';
 import 'package:drawing_board/pages/home_page/widgets/bottom_panel.dart';
@@ -24,11 +24,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               NavigatePanel(),
               Expanded(
-                child: const Center(
-                  // child: Text('Drawing Board',
-                  //   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900),
-                  // ),
-                ),
+                child: const Center(),
               ),
               if (!closedFigure) NotifyPanel(),
               BottomPanel(),

@@ -13,6 +13,8 @@ dependencies:
   riverpod: ^2.5.0
   flutter_riverpod: ^2.4.10
   cupertino_icons: ^1.0.2
+  model:
+    path: ./packages/model
 
 dev_dependencies:
   flutter_test:
