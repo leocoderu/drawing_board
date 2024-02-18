@@ -11,12 +11,12 @@ class Figure {
   List<Offset> path;
   bool closure;
 
-  Figure copyWith({List<Offset>? path, bool? closure,}) =>
+  Figure copyWith({List<Offset>? path, bool? closure}) =>
     Figure(path: path ?? this.path, closure: closure ?? this.closure,);
 
   @override
   String toString() =>
-      'Figure(Has path with: ${path.length} vertex, ${closure ? 'Figure closed' : 'Figure not closed'}';
+      'Figure(Has path with: ${path.length} vertexes, and property closed: ${closure})';
 
   @override
   bool operator ==(Object other) {

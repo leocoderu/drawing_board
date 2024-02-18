@@ -11,7 +11,7 @@ class Vertex {
   final double Y;
   final double? Z;
 
-  Vertex copyWith({double? X, double? Y, double? Z,}) =>
+  Vertex copyWith({double? X, double? Y, double? Z}) =>
     Vertex(X: X ?? this.X, Y: Y ?? this.Y, Z: Z ?? this.Z,);
 
   @override

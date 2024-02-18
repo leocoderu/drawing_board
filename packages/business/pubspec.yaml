@@ -1,0 +1,28 @@
+name: business
+description: "Business Package"
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.5 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  riverpod: ^2.5.0
+  flutter_riverpod: ^2.4.10
+  cupertino_icons: ^1.0.2
+  model:
+    path: ../model
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  analyzer_sm:
+    path: ../analyzer_sm
+
+flutter:
+  uses-material-design: true

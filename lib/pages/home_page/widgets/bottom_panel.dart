@@ -1,22 +1,19 @@
+// Flutter modules
 import 'package:flutter/material.dart';
+// Packages
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BottomPanel extends StatefulWidget {
+class BottomPanel extends ConsumerWidget {
   const BottomPanel({super.key});
 
   @override
-  State<BottomPanel> createState() => _BottomPanelState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final Color backgroundColor = Color.fromARGB(255, 253, 253, 253);
+    final Color backgroundButton = Color.fromARGB(255, 227, 227, 227);
+    final Color disableColor = Color.fromARGB(255, 198, 198, 200);
+    final Color enableColor = Color.fromARGB(255, 125, 125, 125);
+    final bool undoExist = false;
 
-class _BottomPanelState extends State<BottomPanel> {
-  final Color backgroundColor = Color.fromARGB(255, 253, 253, 253);
-  final Color backgroundButton = Color.fromARGB(255, 227, 227, 227);
-  final Color disableColor = Color.fromARGB(255, 198, 198, 200);
-  final Color enableColor = Color.fromARGB(255, 125, 125, 125);
-
-  bool undoExist = true;
-
-  @override
-  Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: backgroundColor,
@@ -42,8 +39,8 @@ class _BottomPanelState extends State<BottomPanel> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.cancel, size: 16,),
-            const Text('Отменить действие', style: TextStyle(fontSize: 12),),
+            Icon(Icons.cancel, size: 16),
+            const Text('Отменить действие', style: TextStyle(fontSize: 12)),
           ],
         ),
       ),
