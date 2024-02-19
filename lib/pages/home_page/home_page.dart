@@ -15,7 +15,8 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bool closure = ref.watch(stateCloseFigureProvider);
+    final bool close = ref.watch(stateCloseFigureProvider);
+    //final vertex = ref.watch(stateVertexProvider);
     return Scaffold(
       body: SafeArea(
         child: BoardPanel(
@@ -23,7 +24,7 @@ class HomePage extends ConsumerWidget {
             children: [
               NavigatePanel(),
               Expanded(child: const Center()),
-              if (!closure) NotifyPanel(),
+              if (!close) NotifyPanel(),
               BottomPanel(),
             ],
           ),

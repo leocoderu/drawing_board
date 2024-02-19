@@ -1,4 +1,5 @@
 // Flutter modules
+import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 // Packages
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,15 +9,13 @@ class BottomPanel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final Color backgroundColor = Color.fromARGB(255, 253, 253, 253);
-    final Color backgroundButton = Color.fromARGB(255, 227, 227, 227);
-    final Color disableColor = Color.fromARGB(255, 198, 198, 200);
-    final Color enableColor = Color.fromARGB(255, 125, 125, 125);
-    final bool undoExist = false;
+    final vertex = ref.watch(VertexState.stateVertexProvider).length;
+    final vertexProvider = ref.watch(VertexState.stateVertexProvider.notifier);
+    final closeProvider = ref.watch(stateCloseFigureProvider.notifier);
 
     return Container(
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: Color.fromARGB(255, 253, 253, 253),
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
       ),
       padding: EdgeInsets.all(10.0),
@@ -26,8 +25,12 @@ class BottomPanel extends ConsumerWidget {
       child: ElevatedButton(
         style: ButtonStyle(
           alignment: Alignment.center,
-          backgroundColor: MaterialStateProperty.all(backgroundButton),
-          foregroundColor: MaterialStateProperty.all(undoExist ? enableColor : disableColor),
+          backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 227, 227, 227)),
+          foregroundColor: MaterialStateProperty.all(
+            vertex > 0
+              ? Color.fromARGB(255, 125, 125, 125)
+              : Color.fromARGB(255, 198, 198, 200),
+          ),
           elevation: MaterialStateProperty.all(0.0),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
@@ -35,7 +38,10 @@ class BottomPanel extends ConsumerWidget {
             ),
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          vertexProvider.clearVertex();
+          closeProvider.closedFalse();
+        },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
