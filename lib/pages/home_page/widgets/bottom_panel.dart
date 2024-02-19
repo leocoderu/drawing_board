@@ -9,9 +9,12 @@ class BottomPanel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final vertex = ref.watch(VertexState.stateVertexProvider).length;
+    //ref.watch(CountState.stateCountProvider);
+    final vertex = ref.watch(VertexState.stateVertexProvider);
+
     final vertexProvider = ref.watch(VertexState.stateVertexProvider.notifier);
     final closeProvider = ref.watch(stateCloseFigureProvider.notifier);
+    final uniqueProvider = ref.watch(UniqueState.stateCountProvider.notifier);
 
     return Container(
       decoration: BoxDecoration(
@@ -27,7 +30,7 @@ class BottomPanel extends ConsumerWidget {
           alignment: Alignment.center,
           backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 227, 227, 227)),
           foregroundColor: MaterialStateProperty.all(
-            vertex > 0
+            vertex.length > 0
               ? Color.fromARGB(255, 125, 125, 125)
               : Color.fromARGB(255, 198, 198, 200),
           ),
@@ -41,6 +44,7 @@ class BottomPanel extends ConsumerWidget {
         onPressed: () {
           vertexProvider.clearVertex();
           closeProvider.closedFalse();
+          uniqueProvider.set(UniqueKey());
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

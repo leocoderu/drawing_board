@@ -22,10 +22,11 @@ class BoardPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final BoardState boardProvider = ref.watch(stateBoardProvider.notifier);
-    final TempZState tempZProvider = ref.watch(stateTempZProvider.notifier);
-    final VertexState vertexProvider = ref.watch(VertexState.stateVertexProvider.notifier);
-    final CloseState closeStateProvider = ref.watch(stateCloseFigureProvider.notifier);
+    final boardProvider = ref.watch(stateBoardProvider.notifier);
+    final tempZProvider = ref.watch(stateTempZProvider.notifier);
+    final vertexProvider = ref.watch(VertexState.stateVertexProvider.notifier);
+    final closeStateProvider = ref.watch(stateCloseFigureProvider.notifier);
+    final countStateProvider = ref.watch(UniqueState.stateCountProvider.notifier);
 
     final board = ref.watch(stateBoardProvider);
     final vertex = ref.watch(VertexState.stateVertexProvider);
@@ -33,7 +34,7 @@ class BoardPanel extends ConsumerWidget {
 
     final double xBoard = board.dx ?? 0.0;
     final double yBoard = board.dy ?? 0.0;
-    final double zBoard = board.dz ?? 0.0;
+    //final double zBoard = board.dz ?? 0.0;
 
     int? idV;
 
@@ -45,16 +46,30 @@ class BoardPanel extends ConsumerWidget {
         onScaleUpdate: (detail) {
           final Offset fPoint = detail.focalPoint;
           if (idV != null) {
-            //if (ref.watch(stateCloseFigureProvider) && (idV == 0 || idV == (vertex.length - 1))) {
             if (close && (idV == 0 || idV == (vertex.length - 1))) {
-              vertexProvider.changeVertex(0, Offset(fPoint.dx - xBoard, fPoint.dy - yBoard));
-              vertexProvider.changeVertex((vertex.length - 1), Offset(fPoint.dx - xBoard, fPoint.dy - yBoard));
+              vertexProvider.changeVertex(0,
+                Offset(
+                  fPoint.dx - (ref.watch(stateBoardProvider).dx ?? 0.0),
+                  fPoint.dy - (ref.watch(stateBoardProvider).dy ?? 0.0),
+                ),
+              );
+              vertexProvider.changeVertex((vertex.length - 1),
+                Offset(
+                  fPoint.dx - (ref.watch(stateBoardProvider).dx ?? 0.0),
+                  fPoint.dy - (ref.watch(stateBoardProvider).dy ?? 0.0),
+                ),
+              );
             } else {
-              vertexProvider.changeVertex(idV!, Offset(fPoint.dx - xBoard, fPoint.dy - yBoard));
+              vertexProvider.changeVertex(idV!,
+                Offset(
+                  fPoint.dx - (ref.watch(stateBoardProvider).dx ?? 0.0),
+                  fPoint.dy - (ref.watch(stateBoardProvider).dy ?? 0.0),
+                ),
+              );
             }
-            // Так делать нельзя, но после этой строки идет обновление UI и точки на экране видны
-            // boardProvider.setValue(Board(dx: ref.watch(stateBoardProvider).dx, dy: ref.watch(stateBoardProvider).dy, dz: ref.watch(stateBoardProvider).dz, angle: 0.0, rotate: 0.0));
-          } else {
+            countStateProvider.set(UniqueKey());
+          }
+          else {
             boardProvider.setValue(
               Board(
                 dx: (ref.watch(stateBoardProvider).dx ?? 0.0) + detail.focalPointDelta.dx,
@@ -70,7 +85,7 @@ class BoardPanel extends ConsumerWidget {
         onScaleEnd: (scaleUpdateDetail) => tempZProvider.setTemp(ref.watch(stateBoardProvider).dz ?? 1.0),
         onTapUp: (tapUpDetails) {
           idV = null;
-
+          countStateProvider.set(UniqueKey());
           final Offset tOffSet = tapUpDetails.localPosition;
 
           if (!ref.watch(stateCloseFigureProvider))   // Добавляем последнюю точку как первую, дельта [-5 +5]
@@ -83,16 +98,14 @@ class BoardPanel extends ConsumerWidget {
             }
 
           // TODO NB: после смещения фигуры, ее нельзя замкнуть, явна проблема с координатами, которые не учитывают смещение !!!
-          // Так делать нельзя, но после этой строки идет обновление UI и точки на экране видны
-          boardProvider.setValue(Board(dx: ref.watch(stateBoardProvider).dx, dy: ref.watch(stateBoardProvider).dy, dz: ref.watch(stateBoardProvider).dz, angle: 0.0, rotate: 0.0));
         },
         onTapDown: (detail) {
           // По нажатию на вершину, определяем ее id от 0
            for(int i = 0; i < vertex.length; i++) {
-            if ((detail.localPosition.dx - xBoard > vertex[i].dx - 5)
-             && (detail.localPosition.dx - xBoard < vertex[i].dx + 5)
-             && (detail.localPosition.dy - yBoard > vertex[i].dy - 5)
-             && (detail.localPosition.dy - yBoard < vertex[i].dy + 5))
+            if ((detail.localPosition.dx - xBoard > vertex[i].dx - 15)
+             && (detail.localPosition.dx - xBoard < vertex[i].dx + 15)
+             && (detail.localPosition.dy - yBoard > vertex[i].dy - 15)
+             && (detail.localPosition.dy - yBoard < vertex[i].dy + 15))
              idV = i;
            };
          },
@@ -109,7 +122,7 @@ class BoardPanel extends ConsumerWidget {
             vertex: ref.watch(VertexState.stateVertexProvider),
             center: true,
           ),
-          child: this.child,
+          child: child,
         ),
       ),
     );
