@@ -1,12 +1,10 @@
 // Flutter modules
-import 'dart:ui';
-
-import 'package:drawing_board/pages/home_page/widgets/board/utilities/functions.dart';
 import 'package:flutter/material.dart';
 // Packages
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Widgets
 import 'package:drawing_board/pages/home_page/widgets/board/widgets/dots_painter.dart';
+import 'package:drawing_board/pages/home_page/widgets/board/utilities/functions.dart';
 // Layers
 import 'package:model/model.dart';
 import 'package:business/business.dart';
