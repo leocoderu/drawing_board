@@ -1,4 +1,6 @@
 // Flutter modules
+import 'package:drawing_board/pages/home_page/widgets/tool_panel.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // Packages
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,16 +17,16 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(UniqueState.stateCountProvider);
-    final bool close = ref.watch(stateCloseFigureProvider);
-    ref.watch(VertexState.stateVertexProvider);
+    final bool close = ref.watch(CloseState.stateCloseFigureProvider);
     return Scaffold(
       body: SafeArea(
         child: BoardPanel(
           child: Column(
             children: [
               NavigatePanel(),
-              Expanded(child: const Center()),
+              Expanded(
+                child: ToolPanel(),
+              ),
               if (!close) NotifyPanel(),
               BottomPanel(),
             ],

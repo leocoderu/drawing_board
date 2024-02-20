@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final stateCloseFigureProvider = StateNotifierProvider<CloseState, bool>((_) => CloseState());
-
 class CloseState extends StateNotifier<bool> {
+  static final stateCloseFigureProvider = StateNotifierProvider<CloseState, bool>((_) => CloseState());
+
   CloseState() : super(false);
 
   void closedTrue() => state = true;

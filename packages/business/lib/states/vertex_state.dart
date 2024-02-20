@@ -6,7 +6,13 @@ class VertexState extends StateNotifier<List<Offset>> {
 
   VertexState() : super(<Offset>[]);
 
-  void addVertex(Offset value) => state.add(value);
-  void changeVertex(int id, Offset value) => state[id] = value;
+  void addVertex(Offset value) => state = [...state, value];
+  void changeVertex(int id, Offset value) {
+    final List<Offset> newIds = state;
+    newIds[id] = value;
+    state = [];
+    state = newIds;
+  }
+
   void clearVertex() => state.clear();
 }

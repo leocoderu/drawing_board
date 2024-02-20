@@ -10,7 +10,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  riverpod: ^2.5.0
   flutter_riverpod: ^2.4.10
   cupertino_icons: ^1.0.2
   business:
