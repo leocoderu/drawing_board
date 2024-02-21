@@ -28,9 +28,7 @@ class BottomPanel extends ConsumerWidget {
           alignment: Alignment.center,
           backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 227, 227, 227)),
           foregroundColor: MaterialStateProperty.all(
-            vertex.length > 0
-              ? Color.fromARGB(255, 125, 125, 125)
-              : Color.fromARGB(255, 198, 198, 200),
+            vertex.isNotEmpty ? Color.fromARGB(255, 125, 125, 125) : Color.fromARGB(255, 198, 198, 200),
           ),
           elevation: MaterialStateProperty.all(0.0),
           shape: MaterialStateProperty.all(
@@ -39,11 +37,12 @@ class BottomPanel extends ConsumerWidget {
             ),
           ),
         ),
-        onPressed: () {
-          vertexProvider.clearVertex();
-          closeProvider.closedFalse();
-          currentVertexProvider.set(null);
-        },
+        onPressed: (vertex.isNotEmpty) ?
+          () {
+            vertexProvider.clearVertex();
+            closeProvider.closedFalse();
+            currentVertexProvider.set(null);
+          } : null,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

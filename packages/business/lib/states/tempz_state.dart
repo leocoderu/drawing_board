@@ -5,6 +5,5 @@ class TempZState extends StateNotifier<double> {
 
   TempZState() : super(1.0);
 
-  void setTemp(double temp) => state = temp;
-
+  void setTemp(double z) => (z > 0) ? state = z : 0.01;
 }

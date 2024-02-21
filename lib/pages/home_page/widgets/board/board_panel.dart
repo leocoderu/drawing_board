@@ -9,6 +9,8 @@ import 'package:drawing_board/pages/home_page/widgets/board/utilities/functions.
 import 'package:model/model.dart';
 import 'package:business/business.dart';
 
+GlobalKey _keyRender = GlobalKey();
+
 class BoardPanel extends ConsumerWidget {
   final Color? backColor;
   final Color? gridColor;
@@ -22,7 +24,6 @@ class BoardPanel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final boardProvider = ref.watch(BoardState.stateBoardProvider.notifier);
     final tempZProvider = ref.watch(TempZState.stateTempZProvider.notifier);
     final vertexProvider = ref.watch(VertexState.stateVertexProvider.notifier);
@@ -39,100 +40,82 @@ class BoardPanel extends ConsumerWidget {
     final double yBoard = board.dy ?? 0.0;
     final double zBoard = board.dz ?? 1.0;
 
+    Offset? posCursor = null;
+
     return Container(
+      key: _keyRender,
       width: double.infinity,
       height: double.infinity,
       color: this.backColor ?? Color.fromARGB(255, 227, 227, 227),
       child: GestureDetector(
-
         onScaleUpdate: (detail) {
+          final pos = detail.localFocalPoint;
 
-          final Offset fPoint = detail.localFocalPoint;
+          final deltaX = (posCursor != null && detail.pointerCount == 1) ? pos.dx - posCursor!.dx : 0.0;
+          final deltaY = (posCursor != null && detail.pointerCount == 1) ? pos.dy - posCursor!.dy : 0.0;
+
+          final Size center = Size(_keyRender.currentContext!.size!.width / 2, _keyRender.currentContext!.size!.height / 2);
 
           if (curVertex != null) {
+            final Offset _offset = Offset(localToGPSC(pos.dx, center.width, zBoard, xBoard), localToGPSC(pos.dy, center.height, zBoard, yBoard));
             if (close && (curVertex == 0 || curVertex == (vertex.length - 1))) {
-              vertexProvider.changeVertex(0,
-                Offset(
-                  fPoint.dx - (ref.watch(BoardState.stateBoardProvider).dx ?? 0.0),
-                  fPoint.dy - (ref.watch(BoardState.stateBoardProvider).dy ?? 0.0),
-                ),
-              );
-              vertexProvider.changeVertex((vertex.length - 1),
-                Offset(
-                  fPoint.dx - (ref.watch(BoardState.stateBoardProvider).dx ?? 0.0),
-                  fPoint.dy - (ref.watch(BoardState.stateBoardProvider).dy ?? 0.0),
-                ),
-              );
+              vertexProvider.changeVertex(0, _offset);
+              vertexProvider.changeVertex((vertex.length - 1), _offset);
             } else {
-              vertexProvider.changeVertex(curVertex,
-                Offset(
-                  fPoint.dx - (ref.watch(BoardState.stateBoardProvider).dx ?? 0.0),
-                  fPoint.dy - (ref.watch(BoardState.stateBoardProvider).dy ?? 0.0),
-                ),
-              );
+              vertexProvider.changeVertex(curVertex, _offset);
             }
           }
           else {
             boardProvider.setValue(
               Board(
-                dx: (ref.watch(BoardState.stateBoardProvider).dx ?? 0.0) + detail.focalPointDelta.dx,
-                dy: (ref.watch(BoardState.stateBoardProvider).dy ?? 0.0) + detail.focalPointDelta.dy,
-                dz: ref.watch(TempZState.stateTempZProvider) * detail.scale,
-                angle: 0.0,
-                rotate: 0.0,
+                dx: (ref.watch(BoardState.stateBoardProvider).dx ?? 0.0) + ((detail.focalPointDelta.dx + deltaX) / zBoard),
+                dy: (ref.watch(BoardState.stateBoardProvider).dy ?? 0.0) + ((detail.focalPointDelta.dy + deltaY) / zBoard),
+                dz: ref.watch(TempZState.stateTempZProvider) * detail.scale, angle: 0.0, rotate: 0.0,
               ),
             );
           }
         },
 
-        //onScaleEnd: (scaleUpdateDetail) => tempZProvider.setTemp(ref.watch(BoardState.stateBoardProvider).dz ?? 1.0),
-        onScaleEnd: (scaleUpdateDetail) => tempZProvider.setTemp(zBoard),
+        onScaleEnd: (scaleUpdateDetail) => tempZProvider.setTemp(ref.watch(BoardState.stateBoardProvider).dz ?? 1.0),
+
+        // Установка вершин и замыкание фигуры
         onTapUp: (detail) {
           final pos = detail.localPosition;
-          final delta = 5 / zBoard;
-
-          //print('Screen width :${MediaQuery.of(context).size.width}');
-          //print('Screen height:${MediaQuery.of(context).size.height}');
-
+          final delta = 8 / zBoard;
+          final Size center = Size(_keyRender.currentContext!.size!.width / 2, _keyRender.currentContext!.size!.height / 2);
+          final posX = localToGPSC(pos.dx, center.width, zBoard, xBoard);
+          final posY = localToGPSC(pos.dy, center.height, zBoard, yBoard);
 
           if (!close)
-            if (vertex.length > 2
-              && pos.dx - xBoard > vertex[0].dx - delta
-              && pos.dx - xBoard < vertex[0].dx + delta
-              && pos.dy - yBoard > vertex[0].dy - delta
-              && pos.dy - yBoard < vertex[0].dy + delta) {
+            if (vertex.length > 2 && posX  > vertex[0].dx - delta && posX  < vertex[0].dx + delta && posY > vertex[0].dy - delta && posY < vertex[0].dy + delta) {
                 vertexProvider.addVertex(vertex[0]);
                 closeStateProvider.closedTrue();
             } else {
-              vertexProvider.addVertex(Offset(pos.dx - xBoard, pos.dy - yBoard));
-              // vertexProvider.addVertex(Offset(
-              //     pos.dx,// - xBoard,
-              //     getCord2(pos.dy, 412 / zBoard, zBoard, yBoard),// - yBoard,
-              // //   (pos.dx - 207) * zBoard + xBoard,
-              // //     //getCord(pos.dx, 207, zBoard, xBoard),// - xBoard,
-              // //     getCord(pos.dy, 412, zBoard, yBoard),// - yBoard,
-              // ));
-              // print('pos: [ ${pos.dx} , ${pos.dy} ]');
-              // print('${getCord(pos.dx, 207, zBoard, xBoard) - xBoard} , ${getCord(pos.dy, 412, zBoard, yBoard) - yBoard}');
-              // print('xBoard / yBoard / zBoard : $xBoard / $yBoard / $zBoard');
-              // print('con: ${pos.dx / zBoard}');
+              vertexProvider.addVertex(Offset(
+                localToGPSC(pos.dx, center.width, zBoard, xBoard),
+                localToGPSC(pos.dy, center.height, zBoard, yBoard),
+              ));
             }
+          posCursor = null;
         },
 
-        // Выделение вершиды для послкдующего изменения
+        // Выделение вершины для последующего изменения
         onTapDown: (detail) {
           final pos = detail.localPosition;
-          final delta = 5 / zBoard;
+          final delta = 8 / zBoard;
+          final Size center = Size(_keyRender.currentContext!.size!.width / 2, _keyRender.currentContext!.size!.height / 2);
           // По нажатию на вершину, определяем ее id от 0 до length-1
           bool vSearch = false;
           for(int i = 0; i < vertex.length; i++) {
-            if ((pos.dx > getCord(vertex[i].dx - delta, 207, zBoard, xBoard))
-              && pos.dx < getCord(vertex[i].dx + delta, 207, zBoard, xBoard)
-              && pos.dy > getCord(vertex[i].dy - delta, 412, zBoard, yBoard)
-              && pos.dy < getCord(vertex[i].dy + delta, 412, zBoard, yBoard))
+            if ((localToGPSC(pos.dx, center.width, zBoard, xBoard)  > vertex[i].dx - delta)
+             && (localToGPSC(pos.dx, center.width, zBoard, xBoard)  < vertex[i].dx + delta)
+             && (localToGPSC(pos.dy, center.height, zBoard, yBoard) > vertex[i].dy - delta)
+             && (localToGPSC(pos.dy, center.height, zBoard, yBoard) < vertex[i].dy + delta))
                 { curVertexProvider.set(i); vSearch = true; break;}
           };
           if (!vSearch) curVertexProvider.set(null);
+
+          posCursor = pos;
         },
 
         child: CustomPaint(

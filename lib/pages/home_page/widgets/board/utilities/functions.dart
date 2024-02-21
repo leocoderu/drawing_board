@@ -1,8 +1,6 @@
-// Ф-я расчета координат с учётом масштабирования
-double getCord(double pos, double center, double z, double offset){
-  return (pos - center) * z + center + offset;
-}
+// Ф-ии расчета координат
+double GPSCToLocal(double pos, double center, double z, double offset) =>
+  (pos + offset) * z + center;
 
-double getCord2(double pos, double center, double z, double offset){
-  return (pos * z) - center +(center * z) + center;
-}
+double localToGPSC(double pos, double center, double z, double offset) =>
+  (pos - center) / z - offset;

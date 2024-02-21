@@ -8,8 +8,8 @@ class BoardState extends StateNotifier<Board> {
   BoardState() : super(Board(dx: 0.0, dy: 0.0, dz: 1.0, angle: 0.0, rotate: 0.0));
 
   void setValue(Board board) => state = board;
-  void zoomIn() => state = state.copyWith(dz: (state.dz ?? 1.0) + 0.1);
-  void zoomOut() => state = Board(dx: state.dx ?? 0.0, dy: state.dy ?? 0.0, dz: (state.dz ?? 1.0) - 0.1, angle: state.angle ?? 0.0, rotate: state.rotate ?? 0.0);
+  void zoomIn() => state = Board(dx: state.dx ?? 0.0, dy: state.dy ?? 0.0, dz: (state.dz ?? 1.0) + 0.1, angle: state.angle ?? 0.0, rotate: state.rotate ?? 0.0);
+  void zoomOut() => state = Board(dx: state.dx ?? 0.0, dy: state.dy ?? 0.0, dz:(((state.dz ?? 1.0) - 0.1) > 0) ? (state.dz ?? 1.0) - 0.1 : (state.dz ?? 1.0), angle: state.angle ?? 0.0, rotate: state.rotate ?? 0.0);
   void zoomZero() => state = Board(dx: state.dx ?? 0.0, dy: state.dy ?? 0.0, dz: 1.0, angle: state.angle ?? 0.0, rotate: state.rotate ?? 0.0);
   void posZero() => state = Board(dx: 0.0, dy: 0.0, dz: (state.dz ?? 1.0), angle: 0.0, rotate: 0.0);
 }

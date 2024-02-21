@@ -8,6 +8,7 @@ class ToolPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final boardProvider = ref.watch(BoardState.stateBoardProvider.notifier);
+    final tempZProvider = ref.watch(TempZState.stateTempZProvider.notifier);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -18,23 +19,32 @@ class ToolPanel extends ConsumerWidget {
             children: [
               IconButton(
                 tooltip: 'Zoom In',
-                onPressed: boardProvider.zoomIn,
+                onPressed: () {
+                  boardProvider.zoomIn();
+                  tempZProvider.setTemp(ref.watch(BoardState.stateBoardProvider).dz ?? 1.0);
+                },
                 icon: Icon(Icons.zoom_in),
               ),
               IconButton(
                 tooltip: 'Zoom Out',
-                onPressed: boardProvider.zoomOut,
+                onPressed: () {
+                  boardProvider.zoomOut();
+                  tempZProvider.setTemp(ref.watch(BoardState.stateBoardProvider).dz ?? 1.0);
+                },
                 icon: Icon(Icons.zoom_out),
               ),
               IconButton(
                 tooltip: 'Zoom 100%',
-                onPressed: boardProvider.zoomZero,
+                onPressed: () {
+                  boardProvider.zoomZero();
+                  tempZProvider.setTemp(ref.watch(BoardState.stateBoardProvider).dz ?? 1.0);
+                },
                 icon: Icon(Icons.zoom_in_map),
               ),
               IconButton(
                 tooltip: 'Null Position',
                 onPressed: boardProvider.posZero,
-                icon: Icon(Icons.near_me_outlined),
+                icon: Icon(Icons.near_me_outlined, textDirection: TextDirection.rtl),
               ),
             ],
           ),

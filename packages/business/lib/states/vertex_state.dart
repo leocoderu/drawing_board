@@ -14,5 +14,5 @@ class VertexState extends StateNotifier<List<Offset>> {
     state = newIds;
   }
 
-  void clearVertex() => state.clear();
+  void clearVertex() => state = [];
 }

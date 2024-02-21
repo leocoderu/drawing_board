@@ -31,15 +31,16 @@ class DotsPainter extends CustomPainter {
     double yScale = centerScale == null ? (size.height / 2) : centerScale!.dy;
 
     final nStep = stepSize * zOffset;
+    bool inverseVertex = false;
 
-    // Рисуем точки стола
+    // Рисуем точки на поверхности стола
     final paint = Paint()
       ..strokeWidth = dotSize ?? 1.00
       ..color = dotColor ?? Colors.black
       ..strokeCap = StrokeCap.round;
     List<Offset> points = [];
-    for(double x = (xScale + xOffset) % nStep; x < size.width; x += nStep)
-      for(double y = (yScale + yOffset) % nStep; y < size.height; y += nStep)
+    for(double x = GPSCToLocal(0.0, xScale, zOffset, xOffset) % nStep; x < size.width; x += nStep)
+      for(double y = GPSCToLocal(0.0, yScale, zOffset, yOffset) % nStep; y < size.height; y += nStep)
         points.add(Offset(x, y));
     canvas.drawPoints(PointMode.points, points, paint);
 
@@ -49,10 +50,7 @@ class DotsPainter extends CustomPainter {
         ..strokeWidth = (dotSize == null) ? 2.0 : dotSize! * 2
         ..color = Colors.red
         ..strokeCap = StrokeCap.round;
-      canvas.drawPoints(PointMode.points, [Offset(
-        getCord(size.width / 2, xScale, zOffset, xOffset),
-        getCord(size.height / 2, yScale, zOffset, yOffset),
-      )], paintCenter,);
+      canvas.drawPoints(PointMode.points, [Offset(GPSCToLocal(0.0, xScale, zOffset, xOffset), GPSCToLocal(0.0, yScale, zOffset, yOffset))], paintCenter);
     }
 
     if (vertex != null) {
@@ -63,11 +61,12 @@ class DotsPainter extends CustomPainter {
           ..strokeWidth = 6.0         // TODO: Вынести в настройки Виджета
           ..color = Colors.white;     // TODO: Вынести в настройки Виджета
 
-        final pathFigure = Path()..moveTo(getCord(vertex![0].dx, xScale, zOffset, xOffset), getCord(vertex![0].dy, yScale, zOffset, yOffset));
+        final pathFigure = Path()..moveTo(GPSCToLocal(vertex![0].dx, xScale, zOffset, xOffset), GPSCToLocal(vertex![0].dy, yScale, zOffset, yOffset));
 
         for (int i = 1; i < vertex!.length; i++)
-          pathFigure.lineTo(getCord(vertex![i].dx, xScale, zOffset, xOffset), getCord(vertex![i].dy, yScale, zOffset, yOffset));
+          pathFigure.lineTo(GPSCToLocal(vertex![i].dx, xScale, zOffset, xOffset), GPSCToLocal(vertex![i].dy, yScale, zOffset, yOffset));
 
+        inverseVertex = true;
         pathFigure.close();
         canvas.drawPath(pathFigure, figure);
       }
@@ -80,23 +79,23 @@ class DotsPainter extends CustomPainter {
 
         for (int i = 0; (i + 1) < vertex!.length; i++) {
           canvas.drawLine(
-            Offset(getCord(vertex![i].dx, xScale, zOffset, xOffset), getCord(vertex![i].dy, yScale, zOffset, yOffset)),
-            Offset(getCord(vertex![i + 1].dx, xScale, zOffset, xOffset), getCord(vertex![i + 1].dy, yScale, zOffset, yOffset)),
+            Offset(GPSCToLocal(vertex![i].dx, xScale, zOffset, xOffset), GPSCToLocal(vertex![i].dy, yScale, zOffset, yOffset)),
+            Offset(GPSCToLocal(vertex![i + 1].dx, xScale, zOffset, xOffset), GPSCToLocal(vertex![i + 1].dy, yScale, zOffset, yOffset)),
             linePaint,
           );
         }
       }
 
-      final outCircle = Paint()..color = borderColor ?? Colors.black;
-      final insCircle = Paint()..color = fillColor ?? Colors.yellow;
+      final outCircle = Paint()..color = !inverseVertex ? borderColor ?? Colors.black : fillColor ?? Colors.yellow;
+      final insCircle = Paint()..color = !inverseVertex ? fillColor ?? Colors.yellow : borderColor ?? Colors.black;
       final curCircle = Paint()..color = Colors.red;
 
       // Рисуем кружки на вершинах
       vertex!.forEach((e) {
-        canvas.drawCircle(Offset(getCord(e.dx, xScale, zOffset, xOffset), getCord(e.dy, yScale, zOffset, yOffset)), radCircle, outCircle);
+        canvas.drawCircle(Offset(GPSCToLocal(e.dx, xScale, zOffset, xOffset), GPSCToLocal(e.dy, yScale, zOffset, yOffset)), radCircle, outCircle);
         (e == this.currentVertex)
-            ? canvas.drawCircle(Offset(getCord(e.dx, xScale, zOffset, xOffset), getCord(e.dy, yScale, zOffset, yOffset)), (radCircle) - (border * 2), curCircle)
-            : canvas.drawCircle(Offset(getCord(e.dx, xScale, zOffset, xOffset), getCord(e.dy, yScale, zOffset, yOffset)), (radCircle) - (border * 2), insCircle);
+            ? canvas.drawCircle(Offset(GPSCToLocal(e.dx, xScale, zOffset, xOffset), GPSCToLocal(e.dy, yScale, zOffset, yOffset)), (radCircle) - (border * 2), curCircle)
+            : canvas.drawCircle(Offset(GPSCToLocal(e.dx, xScale, zOffset, xOffset), GPSCToLocal(e.dy, yScale, zOffset, yOffset)), (radCircle) - (border * 2), insCircle);
       });
     }
   }
