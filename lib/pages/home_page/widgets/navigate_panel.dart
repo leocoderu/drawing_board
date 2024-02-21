@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-//import 'package:business/business.dart';
+import 'package:business/business.dart';
 
 class NavigatePanel extends ConsumerWidget {
   const NavigatePanel({super.key});
@@ -11,8 +11,8 @@ class NavigatePanel extends ConsumerWidget {
     final Color disableColor = Color.fromARGB(255, 198, 198, 200);
     final Color enableColor = Color.fromARGB(255, 125, 125, 125);
 
-    //final vertex = ref.watch(VertexState.stateVertexProvider);
-    //final board = ref.watch(BoardState.stateBoardProvider);
+    final vertex = ref.watch(VertexState.stateVertexProvider);
+    final board = ref.watch(BoardState.stateBoardProvider);
 
     final bool undoExist = false;
     final bool redoExist = false;
@@ -66,40 +66,40 @@ class NavigatePanel extends ConsumerWidget {
               child: Icon(Icons.reply, textDirection: TextDirection.rtl,),
             ),
           ),
-          // SizedBox(width: 10.0),
-          // Expanded(
-          //   child: Container(
-          //     decoration: BoxDecoration(color: Color.fromARGB(255, 250, 250, 250), border: Border.all(color: Color.fromARGB(255, 153, 153, 153))),
-          //     padding: EdgeInsets.all(5.0),
-          //     margin: EdgeInsets.only(right: 10.0),
-          //     height: 100.0,
-          //     width: double.infinity,
-          //     child: Column(
-          //       crossAxisAlignment: CrossAxisAlignment.start,
-          //       children: [
-          //         Text('DX: ${board.dx!.toStringAsFixed(4)}  '
-          //              'DY: ${board.dy!.toStringAsFixed(4)}  '
-          //              'DZ: ${board.dz!.toStringAsFixed(4)}',
-          //               style: TextStyle(fontFamily: "Courier",fontSize: 11.0, fontWeight: FontWeight.bold),
-          //         ),
-          //         SizedBox(height: 5.0,),
-          //         Container(
-          //           height: 65,
-          //           width: double.infinity,
-          //           child: ListView.builder(
-          //             itemCount: vertex.length,
-          //             itemBuilder: (context, index) {
-          //               return Text('DX: ${vertex[index].dx.toStringAsFixed(6)}       '
-          //                   'DY: ${vertex[index].dy.toStringAsFixed(6)}',
-          //                 style: TextStyle(fontFamily: "Courier",fontSize: 12.0, fontWeight: FontWeight.bold),
-          //               );
-          //             },
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
+          SizedBox(width: 10.0),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(color: Color.fromARGB(255, 250, 250, 250), border: Border.all(color: Color.fromARGB(255, 153, 153, 153))),
+              padding: EdgeInsets.all(5.0),
+              margin: EdgeInsets.only(right: 10.0),
+              height: 100.0,
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('DX: ${board.dx!.toStringAsFixed(4)}  '
+                       'DY: ${board.dy!.toStringAsFixed(4)}  '
+                       'DZ: ${board.dz!.toStringAsFixed(4)}',
+                        style: TextStyle(fontFamily: "Courier",fontSize: 11.0, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 5.0,),
+                  Container(
+                    height: 65,
+                    width: double.infinity,
+                    child: ListView.builder(
+                      itemCount: vertex.length,
+                      itemBuilder: (context, index) {
+                        return Text('DX: ${vertex[index].dx.toStringAsFixed(6)}       '
+                            'DY: ${vertex[index].dy.toStringAsFixed(6)}',
+                          style: TextStyle(fontFamily: "Courier",fontSize: 12.0, fontWeight: FontWeight.bold),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

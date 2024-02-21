@@ -1,4 +1,6 @@
 // Flutter modules
+import 'dart:math';
+
 import 'package:drawing_board/pages/home_page/widgets/board/utilities/functions.dart';
 import 'package:flutter/material.dart';
 // Dart modules
@@ -17,6 +19,27 @@ class DotsPainter extends CustomPainter {
     this.borderSize, this.radius, this.dotColor, this.borderColor, this.fillColor,
     this.vertex, this.currentVertex, this.centerScale, this.center,
   });
+
+  void _textDraw(Canvas canvas, String text, double width, Offset pos, double angle) {
+    final _textPainter = TextPainter(textDirection: TextDirection.ltr);
+    _textPainter.text = TextSpan(text: text, style: TextStyle(color: Colors.blue, fontSize: 15, backgroundColor: Colors.amber));
+    _textPainter.textAlign = TextAlign.center;
+    _textPainter.layout(minWidth: width);
+
+    //print('textPainter width : ${_textPainter.width}');
+    //print('textPainter height: ${_textPainter.height}');
+
+    canvas.save();
+
+    Offset pix = Offset(pos.dx - _textPainter.width /2, pos.dy - _textPainter.height / 2);
+    final pivot = _textPainter.size.center(pix);
+    canvas.translate(pivot.dx, pivot.dy);
+    canvas.rotate(angle * pi / 180);
+    canvas.translate(-pivot.dx, -pivot.dy);
+    _textPainter.paint(canvas, pix);
+
+    canvas.restore();
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -84,13 +107,25 @@ class DotsPainter extends CustomPainter {
             linePaint,
           );
         }
+        _textDraw(canvas,
+            '|     180.0mm     |',
+            180.0,
+            Offset(GPSCToLocal(-100.0, xScale, zOffset, xOffset), GPSCToLocal(-50.0, yScale, zOffset, yOffset)),
+            300.0,
+        );
+
+        // final paintPivot = Paint()
+        //   ..strokeWidth = (dotSize == null) ? 2.0 : dotSize! * 2
+        //   ..color = Colors.green
+        //   ..strokeCap = StrokeCap.round;
+        // canvas.drawPoints(PointMode.points, [Offset(100.0, 250.0)], paintPivot);
       }
 
+      // Рисуем кружки на вершинах
       final outCircle = Paint()..color = !inverseVertex ? borderColor ?? Colors.black : fillColor ?? Colors.yellow;
       final insCircle = Paint()..color = !inverseVertex ? fillColor ?? Colors.yellow : borderColor ?? Colors.black;
       final curCircle = Paint()..color = Colors.red;
 
-      // Рисуем кружки на вершинах
       vertex!.forEach((e) {
         canvas.drawCircle(Offset(GPSCToLocal(e.dx, xScale, zOffset, xOffset), GPSCToLocal(e.dy, yScale, zOffset, yOffset)), radCircle, outCircle);
         (e == this.currentVertex)
