@@ -1,10 +1,9 @@
 // Flutter modules
-import 'dart:math';
-
-import 'package:drawing_board/pages/home_page/widgets/board/utilities/functions.dart';
 import 'package:flutter/material.dart';
 // Dart modules
 import 'dart:ui';
+
+import 'package:drawing_board/pages/home_page/widgets/board/utilities/functions.dart';
 
 class DotsPainter extends CustomPainter {
   final double? xPos, yPos, zPos, angle, rotate, step, dotSize, borderSize, radius;
@@ -20,26 +19,37 @@ class DotsPainter extends CustomPainter {
     this.vertex, this.currentVertex, this.centerScale, this.center,
   });
 
-  void _textDraw(Canvas canvas, String text, double width, Offset pos, double angle) {
+  void _textDraw(Canvas canvas, int pos1, int pos2, double xScale, double yScale, double zOffset, double xOffset, double yOffset) { // pos1, pos2 координаты в localPosition!!!
+
+    final double width = lineLength(vertex![pos2], vertex![pos1]);
+    final String text = width.toStringAsFixed(2);
+    final double angle = getAngle(vertex![pos2], vertex![pos1]) ;
+
+    Offset pos = Offset(
+        GPSCToLocal((vertex![pos2].dx - vertex![pos1].dx) / 2 + vertex![pos1].dx, xScale, zOffset, xOffset),
+        GPSCToLocal((vertex![pos2].dy - vertex![pos1].dy) / 2 + vertex![pos1].dy, yScale, zOffset, yOffset),
+    );
+
+    final offset = getOffset(this.vertex!, pos1, pos2, 8.0);
+
     final _textPainter = TextPainter(textDirection: TextDirection.ltr);
-    _textPainter.text = TextSpan(text: text, style: TextStyle(color: Colors.blue, fontSize: 15, backgroundColor: Colors.amber));
+    _textPainter.text = TextSpan(text: text, style: TextStyle(color: Colors.blue, fontSize: 15));
     _textPainter.textAlign = TextAlign.center;
     _textPainter.layout(minWidth: width);
 
-    //print('textPainter width : ${_textPainter.width}');
-    //print('textPainter height: ${_textPainter.height}');
-
     canvas.save();
 
-    Offset pix = Offset(pos.dx - _textPainter.width /2, pos.dy - _textPainter.height / 2);
+    Offset pix = Offset(pos.dx - _textPainter.width /2 + offset.dx, pos.dy - _textPainter.height / 2 + offset.dy);
     final pivot = _textPainter.size.center(pix);
     canvas.translate(pivot.dx, pivot.dy);
-    canvas.rotate(angle * pi / 180);
-    canvas.translate(-pivot.dx, -pivot.dy);
+    canvas.rotate(angle);
+    canvas.translate(-pivot.dx + offset.dx, -pivot.dy + offset.dy);
     _textPainter.paint(canvas, pix);
 
     canvas.restore();
   }
+
+
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -106,13 +116,10 @@ class DotsPainter extends CustomPainter {
             Offset(GPSCToLocal(vertex![i + 1].dx, xScale, zOffset, xOffset), GPSCToLocal(vertex![i + 1].dy, yScale, zOffset, yOffset)),
             linePaint,
           );
+          _textDraw(canvas, i, i + 1, xScale, yScale, zOffset, xOffset, yOffset);
         }
-        _textDraw(canvas,
-            '|     180.0mm     |',
-            180.0,
-            Offset(GPSCToLocal(-100.0, xScale, zOffset, xOffset), GPSCToLocal(-50.0, yScale, zOffset, yOffset)),
-            300.0,
-        );
+
+        //print('Gipotinuza: ${lineLength(Offset(0, 0), Offset(4, 4))}');
 
         // final paintPivot = Paint()
         //   ..strokeWidth = (dotSize == null) ? 2.0 : dotSize! * 2
