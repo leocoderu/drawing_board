@@ -23,33 +23,31 @@ class DotsPainter extends CustomPainter {
 
     final double width = lineLength(vertex![pos2], vertex![pos1]);
     final String text = width.toStringAsFixed(2);
-    final double angle = getAngle(vertex![pos2], vertex![pos1]) ;
+    final double angle = getAngleWithCorrectTextOrientation(vertex![pos2], vertex![pos1]) ;
 
     Offset pos = Offset(
         GPSCToLocal((vertex![pos2].dx - vertex![pos1].dx) / 2 + vertex![pos1].dx, xScale, zOffset, xOffset),
         GPSCToLocal((vertex![pos2].dy - vertex![pos1].dy) / 2 + vertex![pos1].dy, yScale, zOffset, yOffset),
     );
 
-    final offset = getOffset(this.vertex!, pos1, pos2, 8.0);
+    final offset = getOffset(this.vertex!, pos1, pos2, 12.0);
 
     final _textPainter = TextPainter(textDirection: TextDirection.ltr);
-    _textPainter.text = TextSpan(text: text, style: TextStyle(color: Colors.blue, fontSize: 15));
+    _textPainter.text = TextSpan(text: text, style: TextStyle(color: Colors.blue, fontSize: 12));
     _textPainter.textAlign = TextAlign.center;
     _textPainter.layout(minWidth: width);
 
     canvas.save();
 
-    Offset pix = Offset(pos.dx - _textPainter.width /2 + offset.dx, pos.dy - _textPainter.height / 2 + offset.dy);
+    Offset pix = Offset(pos.dx - (_textPainter.width /2) + offset.dx, pos.dy - (_textPainter.height / 2) + offset.dy);
     final pivot = _textPainter.size.center(pix);
     canvas.translate(pivot.dx, pivot.dy);
     canvas.rotate(angle);
-    canvas.translate(-pivot.dx + offset.dx, -pivot.dy + offset.dy);
+    canvas.translate(-pivot.dx, -pivot.dy);
     _textPainter.paint(canvas, pix);
 
     canvas.restore();
   }
-
-
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -119,13 +117,7 @@ class DotsPainter extends CustomPainter {
           _textDraw(canvas, i, i + 1, xScale, yScale, zOffset, xOffset, yOffset);
         }
 
-        //print('Gipotinuza: ${lineLength(Offset(0, 0), Offset(4, 4))}');
 
-        // final paintPivot = Paint()
-        //   ..strokeWidth = (dotSize == null) ? 2.0 : dotSize! * 2
-        //   ..color = Colors.green
-        //   ..strokeCap = StrokeCap.round;
-        // canvas.drawPoints(PointMode.points, [Offset(100.0, 250.0)], paintPivot);
       }
 
       // Рисуем кружки на вершинах
