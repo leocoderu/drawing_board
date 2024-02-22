@@ -2,7 +2,7 @@
 Flutter app for drawing on your phone.
 
 ## Snapshots from Staff List
-<img src = "/tz.png" width ="400" />
+<img src = "/tz.png" width ="800" />
 
 
 ## Время затраченное на разработку
