@@ -40,7 +40,7 @@ class BoardPanel extends ConsumerWidget {
     final double yBoard = board.dy ?? 0.0;
     final double zBoard = board.dz ?? 1.0;
 
-    Offset? posCursor = null;
+    final delta = 8 / zBoard;
 
     return Container(
       key: _keyRender,
@@ -50,59 +50,76 @@ class BoardPanel extends ConsumerWidget {
       child: GestureDetector(
         onScaleUpdate: (detail) {
           final pos = detail.localFocalPoint;
-
-          final deltaX = (posCursor != null && detail.pointerCount == 1) ? pos.dx - posCursor!.dx : 0.0;
-          final deltaY = (posCursor != null && detail.pointerCount == 1) ? pos.dy - posCursor!.dy : 0.0;
+          final int lastV = vertex.length - 1;
 
           final Size center = Size(_keyRender.currentContext!.size!.width / 2, _keyRender.currentContext!.size!.height / 2);
 
           if (curVertex != null) {
             final Offset _offset = Offset(localToGPSC(pos.dx, center.width, zBoard, xBoard), localToGPSC(pos.dy, center.height, zBoard, yBoard));
-            if (close && (curVertex == 0 || curVertex == (vertex.length - 1))) {
+            // Concurrent movement of the first and last vertices in a closed shape
+            if (close && (curVertex == 0 || curVertex == lastV)) {
               vertexProvider.changeVertex(0, _offset);
-              vertexProvider.changeVertex((vertex.length - 1), _offset);
+              vertexProvider.changeVertex(lastV, _offset);
             } else {
+              // Moving selected vertex in an open figure
               vertexProvider.changeVertex(curVertex, _offset);
+              // Magnetization of extreme vertices in an open figure
+              if (vertex.length > 3) {
+                if ((curVertex == 0)
+                    && (vertex[0].dx > (vertex[lastV].dx - delta)) && (vertex[0].dx < (vertex[lastV].dx + delta))
+                    && (vertex[0].dy > (vertex[lastV].dy - delta)) && (vertex[0].dy < (vertex[lastV].dy + delta))){
+                  vertexProvider.changeVertex(0, vertex[lastV]);
+                }
+                if ((curVertex == lastV)
+                    && (vertex[lastV].dx > (vertex[0].dx - delta)) && (vertex[lastV].dx < (vertex[0].dx + delta))
+                    && (vertex[lastV].dy > (vertex[0].dy - delta)) && (vertex[lastV].dy < (vertex[0].dy + delta))){
+                  vertexProvider.changeVertex(lastV, vertex[0]);
+                }
+              }
             }
           }
           else {
+            // Moving and Scale Drawing Board
             boardProvider.setValue(
               Board(
-                dx: (ref.watch(BoardState.stateBoardProvider).dx ?? 0.0) + ((detail.focalPointDelta.dx + deltaX) / zBoard),
-                dy: (ref.watch(BoardState.stateBoardProvider).dy ?? 0.0) + ((detail.focalPointDelta.dy + deltaY) / zBoard),
-                dz: ref.watch(TempZState.stateTempZProvider) * detail.scale, angle: 0.0, rotate: 0.0,
+                dx: (ref.watch(BoardState.stateBoardProvider).dx ?? 0.0) + (detail.focalPointDelta.dx / zBoard),
+                dy: (ref.watch(BoardState.stateBoardProvider).dy ?? 0.0) + (detail.focalPointDelta.dy / zBoard),
+                dz: ref.watch(TempZState.stateTempZProvider) * detail.scale,
+                angle: 0.0, rotate: 0.0,
               ),
             );
           }
         },
 
-        onScaleEnd: (scaleUpdateDetail) => tempZProvider.setTemp(ref.watch(BoardState.stateBoardProvider).dz ?? 1.0),
+        onScaleEnd: (_) {
+          tempZProvider.setTemp(zBoard);
+          // Fixing the magnetized extreme vertices of a shape
+          if ((vertex.length > 3) && (vertex[vertex.length - 1] == vertex[0])) closeStateProvider.closedTrue();
+        },
 
-        // Установка вершин и замыкание фигуры
+        // Fixing vertexes and closing shape
         onTapUp: (detail) {
           final pos = detail.localPosition;
-          final delta = 8 / zBoard;
           final Size center = Size(_keyRender.currentContext!.size!.width / 2, _keyRender.currentContext!.size!.height / 2);
           final posX = localToGPSC(pos.dx, center.width, zBoard, xBoard);
           final posY = localToGPSC(pos.dy, center.height, zBoard, yBoard);
 
           if (!close)
-            if (vertex.length > 2 && posX  > vertex[0].dx - delta && posX  < vertex[0].dx + delta && posY > vertex[0].dy - delta && posY < vertex[0].dy + delta) {
+            if ((vertex.length > 2)
+              && (posX  > (vertex[0].dx - delta)) && (posX  < (vertex[0].dx + delta))
+              && (posY > (vertex[0].dy - delta))  && (posY < (vertex[0].dy + delta))) {
                 vertexProvider.addVertex(vertex[0]);
                 closeStateProvider.closedTrue();
             } else {
-              vertexProvider.addVertex(Offset(
-                localToGPSC(pos.dx, center.width, zBoard, xBoard),
-                localToGPSC(pos.dy, center.height, zBoard, yBoard),
-              ));
+              vertexProvider.addVertex(
+                Offset(localToGPSC(pos.dx, center.width, zBoard, xBoard), localToGPSC(pos.dy, center.height, zBoard, yBoard)),
+              );
             }
-          posCursor = null;
         },
 
         // Выделение вершины для последующего изменения
         onTapDown: (detail) {
           final pos = detail.localPosition;
-          final delta = 8 / zBoard;
           final Size center = Size(_keyRender.currentContext!.size!.width / 2, _keyRender.currentContext!.size!.height / 2);
           // По нажатию на вершину, определяем ее id от 0 до length-1
           bool vSearch = false;
@@ -114,8 +131,6 @@ class BoardPanel extends ConsumerWidget {
                 { curVertexProvider.set(i); vSearch = true; break;}
           };
           if (!vSearch) curVertexProvider.set(null);
-
-          posCursor = pos;
         },
 
         child: CustomPaint(

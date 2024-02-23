@@ -1,4 +1,4 @@
-// State of Board
+// State of the drawing board
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:model/model.dart';
 
