@@ -21,11 +21,7 @@ Flutter App for drawing on your phone.
 <img src = "/tz.png"  alt=""/>
 
 ## Snapshots from Staff List
-<img src = "/snapshots/Screenshot_20240223_161128.png"  alt="" width="200" />
-<img src = "/snapshots/Screenshot_20240223_161148.png"  alt="" width="200" />
-<img src = "/snapshots/Screenshot_20240223_161206.png"  alt="" width="200" />
-<img src = "/snapshots/Screenshot_20240223_161242.png"  alt="" width="200" />
-<img src = "/snapshots/Screenshot_20240223_161359.png"  alt="" width="200" />
+<img src = "/snapshots/Screenshot_20240223_161128.png"  alt="" width="200" /><img src = "/snapshots/Screenshot_20240223_161148.png"  alt="" width="200" /><img src = "/snapshots/Screenshot_20240223_161206.png"  alt="" width="200" /><img src = "/snapshots/Screenshot_20240223_161242.png"  alt="" width="200" /><img src = "/snapshots/Screenshot_20240223_161359.png"  alt="" width="200" />
 
 ## Время затраченное на разработку
 16/02/24: 12:17 - 13:32, 13:52 - 18:31, 18:36 - 19:00, 20:00 - 21:24, 21:45 - 22:15<br />
