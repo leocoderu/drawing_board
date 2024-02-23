@@ -20,7 +20,7 @@ Flutter App for drawing on your phone.
 ## Example:
 <img src = "/tz.png"  alt=""/>
 
-## Snapshots from Staff List
+## Snapshots of Drawing Board App
 <img src = "/snapshots/Screenshot_20240223_161128.png" alt="" width="200" /> <img src = "/snapshots/Screenshot_20240223_161148.png" alt="" width="200" /> <img src = "/snapshots/Screenshot_20240223_161206.png" alt="" width="200" /> <img src = "/snapshots/Screenshot_20240223_161359.png" alt="" width="200" />
 
 ## Время затраченное на разработку
