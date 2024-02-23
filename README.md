@@ -18,7 +18,7 @@ Flutter App for drawing on your phone.
 - Время выполнения задания.
 
 ## Example:
-<img src = "/tz.png" width ="1100" />
+<img src = "/tz.png" />
 
 ## Snapshots from Staff List
 
