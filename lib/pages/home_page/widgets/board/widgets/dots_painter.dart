@@ -20,7 +20,6 @@ class DotsPainter extends CustomPainter {
   });
 
   void _textDraw(Canvas canvas, int pos1, int pos2, double xScale, double yScale, double zOffset, double xOffset, double yOffset) { // pos1, pos2 координаты в localPosition!!!
-
     final double width = lineLength(vertex![pos2], vertex![pos1]);
     final String text = width.toStringAsFixed(2);
     final double angle = getAngleWithCorrectTextOrientation(vertex![pos2], vertex![pos1]) ;
@@ -64,7 +63,7 @@ class DotsPainter extends CustomPainter {
     final nStep = stepSize * zOffset;
     bool inverseVertex = false;
 
-    // Рисуем точки на поверхности стола
+    // Draw dots on the surface of the table
     final paint = Paint()
       ..strokeWidth = dotSize ?? 1.00
       ..color = dotColor ?? Colors.black
@@ -75,7 +74,7 @@ class DotsPainter extends CustomPainter {
         points.add(Offset(x, y));
     canvas.drawPoints(PointMode.points, points, paint);
 
-    // Если указано начало координат, рисуем точку начала координат
+    // Draw the origin point
     if (center == true) {
       final paintCenter = Paint()
         ..strokeWidth = (dotSize == null) ? 2.0 : dotSize! * 2
@@ -86,7 +85,7 @@ class DotsPainter extends CustomPainter {
 
     if (vertex != null) {
 
-      // Рисуем многоугольник
+      // Draw the polygon
       if (vertex!.length > 2 && vertex![0] == vertex![vertex!.length-1]) {
         final figure = Paint()
           ..strokeWidth = 6.0         // TODO: Вынести в настройки Виджета
@@ -102,7 +101,7 @@ class DotsPainter extends CustomPainter {
         canvas.drawPath(pathFigure, figure);
       }
 
-      // Рисуем линии
+      // Draw the line
       if (vertex!.length > 1) {
         final linePaint = Paint()
           ..strokeWidth = 6.0
@@ -114,13 +113,13 @@ class DotsPainter extends CustomPainter {
             Offset(GPSCToLocal(vertex![i + 1].dx, xScale, zOffset, xOffset), GPSCToLocal(vertex![i + 1].dy, yScale, zOffset, yOffset)),
             linePaint,
           );
+
+          // Draw size of line
           _textDraw(canvas, i, i + 1, xScale, yScale, zOffset, xOffset, yOffset);
         }
-
-
       }
 
-      // Рисуем кружки на вершинах
+      // Draw circles on the vertexes
       final outCircle = Paint()..color = !inverseVertex ? borderColor ?? Colors.black : fillColor ?? Colors.yellow;
       final insCircle = Paint()..color = !inverseVertex ? fillColor ?? Colors.yellow : borderColor ?? Colors.black;
       final curCircle = Paint()..color = Colors.red;

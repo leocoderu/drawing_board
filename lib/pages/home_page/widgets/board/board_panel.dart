@@ -105,23 +105,25 @@ class BoardPanel extends ConsumerWidget {
           final posY = localToGPSC(pos.dy, center.height, zBoard, yBoard);
 
           if (!close)
-            if ((vertex.length > 2)
-              && (posX  > (vertex[0].dx - delta)) && (posX  < (vertex[0].dx + delta))
-              && (posY > (vertex[0].dy - delta))  && (posY < (vertex[0].dy + delta))) {
-                vertexProvider.addVertex(vertex[0]);
-                closeStateProvider.closedTrue();
-            } else {
-              vertexProvider.addVertex(
-                Offset(localToGPSC(pos.dx, center.width, zBoard, xBoard), localToGPSC(pos.dy, center.height, zBoard, yBoard)),
-              );
-            }
+              if ((vertex.length > 2)
+                && (posX  > (vertex[0].dx - delta)) && (posX  < (vertex[0].dx + delta))
+                && (posY > (vertex[0].dy - delta))  && (posY < (vertex[0].dy + delta))) {
+                  vertexProvider.addVertex(vertex[0]);
+                  closeStateProvider.closedTrue();
+              } else {
+                if (!hasIntersection(vertex, Offset(localToGPSC(pos.dx, center.width, zBoard, xBoard), localToGPSC(pos.dy, center.height, zBoard, yBoard)))) {
+                  vertexProvider.addVertex(
+                    Offset(localToGPSC(pos.dx, center.width, zBoard, xBoard), localToGPSC(pos.dy, center.height, zBoard, yBoard)),
+                  );
+                }
+              }
         },
 
-        // Выделение вершины для последующего изменения
+        // Selecting a vertex for later modification
         onTapDown: (detail) {
           final pos = detail.localPosition;
           final Size center = Size(_keyRender.currentContext!.size!.width / 2, _keyRender.currentContext!.size!.height / 2);
-          // По нажатию на вершину, определяем ее id от 0 до length-1
+          // By clicking on a vertex, we determine its id from 0 to length-1
           bool vSearch = false;
           for(int i = 0; i < vertex.length; i++) {
             if ((localToGPSC(pos.dx, center.width, zBoard, xBoard)  > vertex[i].dx - delta)
@@ -133,21 +135,23 @@ class BoardPanel extends ConsumerWidget {
           if (!vSearch) curVertexProvider.set(null);
         },
 
-        child: CustomPaint(
-          painter: DotsPainter(
-            xPos: ref.watch(BoardState.stateBoardProvider).dx,
-            yPos: ref.watch(BoardState.stateBoardProvider).dy,
-            zPos: ref.watch(BoardState.stateBoardProvider).dz,
-            dotSize: 2.5, borderSize: 1.0, radius: 7.0,
-            dotColor: this.gridColor ?? Color.fromARGB(255, 159, 205, 230),
-            borderColor: this.borderColor ?? Color.fromARGB(255, 253, 253, 253),
-            fillColor: this.borderColor ?? Color.fromARGB(255, 0, 152, 238),
-            vertex: ref.watch(VertexState.stateVertexProvider),
-            currentVertex: curVertex != null ? vertex[curVertex] : null,
-            //centerScale: Offset(getWidth(), getHeight()), // Центр масштабирования
-            center: true,
+        child: ClipRect(
+          child: CustomPaint(
+            painter: DotsPainter(
+              xPos: ref.watch(BoardState.stateBoardProvider).dx,
+              yPos: ref.watch(BoardState.stateBoardProvider).dy,
+              zPos: ref.watch(BoardState.stateBoardProvider).dz,
+              dotSize: 2.5, borderSize: 1.0, radius: 7.0,
+              dotColor: this.gridColor ?? Color.fromARGB(255, 159, 205, 230),
+              borderColor: this.borderColor ?? Color.fromARGB(255, 253, 253, 253),
+              fillColor: this.borderColor ?? Color.fromARGB(255, 0, 152, 238),
+              vertex: ref.watch(VertexState.stateVertexProvider),
+              currentVertex: curVertex != null ? vertex[curVertex] : null,
+              //centerScale: Offset(getWidth(), getHeight()), // Center of scale
+              center: true,
+            ),
+            child: child,
           ),
-          child: child,
         ),
       ),
     );

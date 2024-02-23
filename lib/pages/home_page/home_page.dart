@@ -19,19 +19,21 @@ class HomePage extends ConsumerWidget {
     final bool close = ref.watch(CloseState.stateCloseFigureProvider);
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          //height: 750,
-          //width: 400,
-          child: BoardPanel(
-            child: Column(
-              children: [
-                NavigatePanel(),
-                Expanded(
-                  child: ToolPanel(),
-                ),
-                if (!close) NotifyPanel(),
-                BottomPanel(),
-              ],
+        child: Center(
+          child: Container(
+            // height: 500,
+            // width: 300,
+            child: BoardPanel(
+              child: Column(
+                children: [
+                  NavigatePanel(),
+                  Expanded(
+                    child: ToolPanel(),
+                  ),
+                  if (!close) NotifyPanel(),
+                  BottomPanel(),
+                ],
+              ),
             ),
           ),
         ),
