@@ -26,11 +26,11 @@ class NavigatePanel extends ConsumerWidget {
             width: 36,
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(backgroundColor),
-                foregroundColor: MaterialStateProperty.all(disableColor), //undoExist ? enableColor : disableColor),
-                elevation: MaterialStateProperty.all(0.0),
-                padding: MaterialStateProperty.all(EdgeInsets.all(0.0)),
-                shape: MaterialStateProperty.all(
+                backgroundColor: WidgetStateProperty.all(backgroundColor),
+                foregroundColor: WidgetStateProperty.all(disableColor), //undoExist ? enableColor : disableColor),
+                elevation: WidgetStateProperty.all(0.0),
+                padding: WidgetStateProperty.all(EdgeInsets.all(0.0)),
+                shape: WidgetStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.horizontal(left: Radius.circular(5.0)),
                   ),
@@ -52,11 +52,11 @@ class NavigatePanel extends ConsumerWidget {
             width: 36,
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(backgroundColor),
-                foregroundColor: MaterialStateProperty.all(disableColor), // redoExist ? enableColor : disableColor),
-                elevation: MaterialStateProperty.all(0.0),
-                padding: MaterialStateProperty.all(EdgeInsets.all(0.0)),
-                shape: MaterialStateProperty.all(
+                backgroundColor: WidgetStateProperty.all(backgroundColor),
+                foregroundColor: WidgetStateProperty.all(disableColor), // redoExist ? enableColor : disableColor),
+                elevation: WidgetStateProperty.all(0.0),
+                padding: WidgetStateProperty.all(EdgeInsets.all(0.0)),
+                shape: WidgetStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.horizontal(right: Radius.circular(5.0)),
                   ),

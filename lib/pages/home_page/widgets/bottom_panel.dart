@@ -26,12 +26,12 @@ class BottomPanel extends ConsumerWidget {
       child: ElevatedButton(
         style: ButtonStyle(
           alignment: Alignment.center,
-          backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 227, 227, 227)),
-          foregroundColor: MaterialStateProperty.all(
+          backgroundColor: WidgetStateProperty.all(Color.fromARGB(255, 227, 227, 227)),
+          foregroundColor: WidgetStateProperty.all(
             vertex.isNotEmpty ? Color.fromARGB(255, 125, 125, 125) : Color.fromARGB(255, 198, 198, 200),
           ),
-          elevation: MaterialStateProperty.all(0.0),
-          shape: MaterialStateProperty.all(
+          elevation: WidgetStateProperty.all(0.0),
+          shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
